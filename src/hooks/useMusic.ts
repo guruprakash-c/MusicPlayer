@@ -44,11 +44,31 @@ export const useMusic = () => {
     const [currentTrackIndex, setCurrentTrackIndex]  = useState(0);
     const [currentTime, setCurrentTime]  = useState(0);
     const [duration, setDuration]  = useState(0);
+    const [isPlaying, setIsPlaying]  = useState(false);
+    const [volume, setVolume]  = useState(1);
 
     const handlePlaylist = (song:any, index:number) =>{
         setCurrentTrack(song);
         setCurrentTrackIndex(index);
     }
+
+    const nextTrack = () => {
+      setCurrentTrackIndex((prev) => {
+        const nextIndex = (prev + 1) % allSongs.length;
+        setCurrentTrack(allSongs[nextIndex]);
+        return nextIndex;
+      });
+      setIsPlaying(false);
+    };
+
+    const prevTrack = () => {
+      setCurrentTrackIndex((prev) => {
+        const nextIndex = prev === 0 ? allSongs.length - 1 : prev - 1;
+        setCurrentTrack(allSongs[nextIndex]);
+        return nextIndex;
+      });
+      setIsPlaying(false);
+    };
 
     const formatTime = (time:number) => {
         if(isNaN(time) || time === undefined) return "0:00";
@@ -57,5 +77,8 @@ export const useMusic = () => {
         return `${minutes}:${seconds.toString().padStart(2,"0")}`;
     }
 
-    return { allSongs, handlePlaylist, currentTrack, currentTrackIndex, currentTime, formatTime, duration }
+    const play = () => setIsPlaying(true);
+    const pause = () => setIsPlaying(false);
+
+    return { allSongs, handlePlaylist, currentTrack, currentTrackIndex, currentTime, formatTime, duration, setDuration, setCurrentTime, nextTrack, prevTrack, play, pause, isPlaying, volume, setVolume}
 }
